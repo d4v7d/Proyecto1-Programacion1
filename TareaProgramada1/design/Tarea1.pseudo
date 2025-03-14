@@ -1,0 +1,399 @@
+procedure lecturaDeDatos() do 
+    set entrada := leerCadena
+    if entradaInvalida(entrada) >= 1 do 
+        print "entrada invalida"
+        else do 
+            set [] y := entrada
+            set nRows := leerEntero
+            set nCols := leerEntero
+            set cajas := leerEntero
+
+            set matriz = new char [nRows][nCols]
+
+            for row = 0 hasta que row sea igual a nRows menos 1 do 
+                for col = 0 hasta que col sea igual a nCol menos 1 do 
+      matriz[row][col] = leerCaracter();
+                end      
+            end
+        end
+    end
+end
+
+//Si la matriz contiene algún valor invalido para el tablero no pasara este filtro
+if matrizValida (matriz, nRows, nCols) >= 1 do
+    System.out.println("matriz invalida");
+
+end else do
+
+    // para saber si la partida termino o no
+    victoria(matriz, nRows, nCols);
+
+    //para saber donde se escuentran las cajas
+    cajas(matriz, nRows, nCols);
+
+    // encuentra las cajas bloqueadas
+    cajasBloqueadas(matriz, nRows, nCols);
+
+    //para ver si se puede mover
+    movimientosValidos(matriz, nRows, nCols);
+
+        end
+end
+    
+    /**
+     * Este metodo recibe la entrada para analizar
+     * si alguna entrada no es valida, como ejemplo una letra.
+     */
+
+     procedure entradaInvalida( entrada) do
+
+        set [] y = entrada
+        set valido = 0;
+
+        for set i = 0; hasta que i sea igual al tamanio de y menos 1  do
+
+            set num
+            try do
+                num = Integer.parseInt(y[i]);
+            end catch (Exception e) do
+                ++valido;
+            end 
+
+        end 
+        return valido;
+    end    
+
+     /**
+     * este metodo recibe la matriz y busca por
+     * algun caracter que no sea valido
+     */
+     procedure matrizValida( char[][] matriz,  nRows,  nCol) do
+
+        char cajacon = 'X'
+        char cajasin = 'O'
+        char pared = '#'
+        char box = '*'
+        char pers = '@'
+        char piso = '.'
+
+        int invalida = 0
+
+        for  i = 0; hasta que i sea igual a nRows menos 1 do
+            for set j = 0 hasta j sea igual a nCol menos 1 do
+
+                if matriz[i][j] != pers
+                        && matriz[i][j] != cajacon
+                        && matriz[i][j] != cajasin
+                        && matriz[i][j] != pared
+                        && matriz[i][j] != box
+                        && matriz[i][j] != piso) do
+
+                    ++invalida
+                    break;
+                end
+            end
+        end
+
+        return invalida
+    end
+
+    /**
+     * este metodo revisa si hay algun agujero en
+     * el tablero ("O"), si hay alguno significa
+     * que la partida no ha terminado y si no
+     * encuentra alguno significa que la partida termino.
+     */
+     procedure victoria(char[][] matriz, nRows, nCol) do
+
+        char cajasin = 'O'
+        set victory = 0
+
+        for  i = 0; hasta que i sea igual a nRows menos 1 do
+            for j = 0; hasta que j sea igual a nCol do
+
+                if matriz[i][j] == cajasin do
+
+                    ++victory
+                end 
+            end 
+        end 
+        if victory >= 1 do
+
+            print"           Victoria: No"
+        end 
+        if victory == 0 do
+
+            print"           Victoria: Si"
+        end 
+
+     end
+    
+
+    /**
+     * este metodo busca en la matriz por cajas,
+     * ("*" o "X") e imprime su ubicacion.
+     */
+     procedure cajas(char[][] matriz, nRows, nCol) do
+
+        set char box = '*'
+        set char cajacon = 'X'
+
+        print"              Cajas: "
+        for  i = 0; hasta que  i sea igual a nRows menos 1 do
+            for  j = 0; hasta que j sea igual a nCol menos 1 do
+
+                if matriz[i][j] == cajacon do
+                    print"r"
+                    print(i)
+                    print"c"
+                    print(j)
+                    print("* ")
+                end 
+                if (matriz[i][j] == box)  do
+                    print"r"
+                    print(i)
+                    print"c"
+                    print(j)
+                    print" "
+                end 
+            end 
+        end 
+        print()
+
+     end 
+
+
+    /**
+     * este metodo revisa los objetos alrededor del personaje
+     * y revisa si puede moverse, en caso de
+     * encontrarse una caja revisara si puede mover la caja o no.
+     */
+    procedure movimientosValidos(char[][] matriz, nRows, nCol) do
+        set char cajacon = 'X'
+        set char cajasin = 'O'
+        set char pared = '#'
+        set char box = '*'
+        set char pers = '@'
+        set char piso = '.'
+        print"Movimientos validos: "
+
+        for  i = 0; hasta que i = (nRows-1)  do
+            for j = 0; hasta que j = (nCol-1)  do
+                if (matriz[i][j] == pers) do
+                    //norte
+                    if (matriz[i - 1][j] == piso) do                        System.out.print("N:");
+                        print"r"
+                        print( i - 1)
+                        print"c"
+                        print(j)
+                        print" "
+                    end
+                    if (matriz[i - 1][j] == cajasin) do
+                        print"N:"
+                        print"r"
+                        print(i - 1)
+                        print"c"
+                        print(j)
+                        print" "
+                    end 
+                    if (matriz[i - 1][j] == pared) do
+                        print"N:- "
+                    end 
+                    if (matriz[i - 1][j] == box
+                            || matriz[i - 1][j] == cajacon) do
+                        if (matriz[i - 2][j] == box
+                                || matriz[i - 2][j] == cajacon
+                                || matriz[i - 2][j] == pared) do
+                            print"N:- "
+                        end
+                        else do
+                            print"N:"
+                            print"r"
+                            print(i - 1)
+                            print"c"
+                            print(j);
+                            print" "
+                        end 
+                    end 
+                    //este
+                    if (matriz[i][j + 1] == pared) do
+                        print"E:- "
+
+                    end 
+                    if (matriz[i][j + 1] == box
+                            || matriz[i][j + 1] == cajacon) do
+                        if (matriz[i][j + 2] == box
+                                || matriz[i][j + 2] == cajacon
+                                || matriz[i][j + 2] == pared) do
+
+                            print"E:- "
+                        end
+                        else do
+                            print"E:"
+                            print"r"
+                            print(i)
+                            print"c"
+                            print(j + 1);
+                            print" "
+                        end 
+                    end
+                    if (matriz[i][j + 1] == piso
+                            || matriz[i][j + 1] == cajasin) do
+                        print"E:"
+                        print"r"
+                        print(i)
+                        print"c"
+                        print(j + 1)
+                        print" "
+                    end 
+                    //sur
+                    if (matriz[i + 1][j] == pared) do
+                        print"S:- "
+
+                    end 
+                    if (matriz[i + 1][j] == box
+                            || matriz[i + 1][j] == cajacon) do
+                        if (matriz[i + 2][j] == box
+                                || matriz[i + 2][j] == cajacon
+                                || matriz[i + 2][j] == pared) do
+
+                            print"S:- "
+                        end
+                        else do
+                            print"S:"
+                            print"r"
+                            print(i + 1)
+                            print"c"
+                            print(j)
+                            print" "
+                        end 
+                    end
+                    if (matriz[i + 1][j] == piso
+                            || matriz[i + 1][j] == cajasin) do
+                        print"S:"
+                        print"r"
+                        print(i + 1)
+                        print"c"
+                        print(j)
+                        print" "
+
+                    end
+                    //oeste
+                    if (matriz[i][j - 1] == pared) do
+                        print"O:- "
+
+                    end 
+                    if (matriz[i][j - 1] == box
+                            || matriz[i][j - 1] == cajacon) do
+                        if (matriz[i][j - 2] == box
+                                || matriz[i][j - 2] == cajacon
+                                || matriz[i][j - 2] == pared) do
+
+                            print"O:- "
+                        end
+                        else do
+                            print"O:"
+                            print"r"
+                            print(i)
+                            print"c"
+                            print(j - 1)
+                            print" "
+                        end
+                    end
+                    if (matriz[i][j - 1] == piso
+                            || matriz[i][j - 1] == cajasin) {
+                        print"O:"
+                        print"r"
+                        print(i)
+                        print"c"
+                        print(j - 1)
+                        print" "
+                    }
+                }
+            }
+        }
+        print()
+    }
+
+ /**
+     * este metodo busca si una caja se encuentra en una
+     * "esquina", osea si esta bloqueda en los casos,
+     * (arriba y derecha, arriba e izquierda,
+     * abajo y derecha y abajo e izquierda).
+     */
+     procedure cajasBloqueadas(char[][] matriz, nRows, nCol) do
+
+        set char cajacon = 'X'
+        set char pared = '#'
+        set char box = '*'
+
+        print("   Cajas Bloqueadas: ")
+        for  i = 0; hasta que i = (nRows-1) do
+            for  j = 0; hasta que j = (nCol-1) do
+
+                if (matriz[i][j] == box) do
+
+                    if ((matriz[i + 1][j] == pared
+                            || matriz[i + 1][j] == box
+                            || matriz[i + 1][j] == cajacon)
+                            && (matriz[i][j + 1] == pared
+                            || matriz[i][j + 1] == box
+                            || matriz[i][j + 1] == cajacon)) do
+
+                        print"r"
+                        print(i)
+                        print"c"
+                        print(j)
+                        print" ")
+                        continue
+
+                    end
+
+                    if ((matriz[i + 1][j] == pared
+                            || matriz[i + 1][j] == box
+                            || matriz[i + 1][j] == cajacon)
+                            && (matriz[i][j - 1] == pared
+                            || matriz[i][j - 1] == box
+                            || matriz[i][j - 1] == cajacon)) do
+
+                        print"r"
+                        print(i)
+                        print"c"
+                        print(j)
+                        print" "
+                        continue
+                    end
+                    if ((matriz[i - 1][j] == box
+                            || matriz[i - 1][j] == pared
+                            || matriz[i - 1][j] == cajacon)
+                            && (matriz[i][j + 1] == pared
+                            || matriz[i][j + 1] == box
+                            || matriz[i][j + 1] == cajacon)) do
+
+                        print"r"
+                        print(i)
+                        print"c"
+                        print(j);
+                        print" "
+                        continue
+                    end
+                    if ((matriz[i - 1][j] == box
+                            || matriz[i - 1][j] == pared
+                            || matriz[i - 1][j] == cajacon)
+                            && (matriz[i][j - 1] == pared
+                            || matriz[i][j - 1] == box
+                            || matriz[i][j - 1] == cajacon)) do
+
+                        print"r"
+                        print(i)
+                        print"c"
+                        print(j)
+                        print" "
+                        continue
+                    end
+                end
+            end
+        end
+        print()
+    end
+end
